@@ -31,6 +31,124 @@ public class AllSolution {
         longestCommonsSubsequence();
         maxIncreasingSubsequence();
         kthLargestEle();
+        buySellStockOneForMaxProfit();
+        buySellManyTimesForMaxProfit();
+        eggDroppingProblem();
+        diceThrowProblem();
+    }
+
+    private static void diceThrowProblem() {
+
+        /*Given n dice each with m faces, numbered from 1 to m, find the number of ways to get sum X. X is the summation of values on each face when all the dice are thrown.*/
+
+        /*Let the function to find X from n dice is: Sum(m, n, X)
+                The function can be represented as:
+                Sum(m, n, X) = Finding Sum (X - 1) from (n - 1) dice plus 1 from nth dice
+               + Finding Sum (X - 2) from (n - 1) dice plus 2 from nth dice
+               + Finding Sum (X - 3) from (n - 1) dice plus 3 from nth dice
+         */
+
+        int mFaces = 4;
+        int nDices = 3;
+        int sum = 5;
+
+        int table[][] = new int[nDices+1][sum+1];
+        //table entries for 1 dice
+        for (int i = 1; i <=mFaces && i<= sum ; i++) {
+            table[1][i] = 1;
+        }
+
+        for (int i = 2; i <= nDices; i++)
+            for (int j = 1; j <= sum; j++)
+                for (int k = 1; k <= mFaces && k < j; k++)
+                    table[i][j] += table[i-1][j-k];
+
+        System.out.println("diceThrowProblem : " + table[nDices][sum]);
+
+    }
+
+    private static void eggDroppingProblem() {
+        int eggs = 2, floors = 10;
+        int res = eggDropRecusrsive(eggs, floors);
+        System.out.println("Min eggs recursive : "+ res);
+        int res2 = eggDropOptimized(eggs, floors);
+        System.out.println("Min eggs optimized : "+ res2);
+    }
+
+    private static int eggDropOptimized(int eggs, int floors) {
+        int eggFloor[][] = new int[eggs+1][floors+1];
+        int res;
+        // We need one trial for one floor and 0 trials for 0 floors
+        for (int i = 1; i <= eggs; i++)
+        {
+            eggFloor[i][1] = 1;
+            eggFloor[i][0] = 0;
+        }
+
+        // We always need j trials for one egg and j floors.
+        for (int j = 1; j <= floors; j++)
+            eggFloor[1][j] = j;
+
+        // Fill rest of the entries in table using optimal substructure
+        // property
+        for (int i = 2; i <= eggs; i++) {
+            for (int j = 2; j <= floors; j++) {
+                eggFloor[i][j] = Integer.MAX_VALUE;
+                for (int k = 1; k <= j; k++) {
+                    res = 1+ Math.max(eggFloor[i-1][k-1], eggFloor[i][j-k]); //Watch tushar if you forget
+                    if(res < eggFloor[i][j])
+                        eggFloor[i][j] = res;
+                }
+            }
+        }
+        return eggFloor[eggs][floors];
+    }
+
+    private static int eggDropRecusrsive(int eggs, int floors) {
+        if(floors ==0 || floors == 1) //If there are no floors then no trials needed
+            return floors;
+
+        if(eggs == 1)
+            return floors;
+
+        int min = Integer.MAX_VALUE;
+        int res;
+        for (int i = 1; i <= floors ; i++) {
+            res = Math.max(eggDropRecusrsive(eggs-1, i-1), eggDropRecusrsive(eggs, floors-i));
+            if(res < min)
+                min = res;
+        }
+        return min+1;
+    }
+
+    private static void buySellManyTimesForMaxProfit() {
+        int arr[] = {2, 6, 7, 19, 5, 6};
+        int profit = 0;
+        int localMin = arr[0];
+        for (int i = 1; i < arr.length; i++) {
+            if(arr[i-1] >= arr[i])
+                localMin = arr[i];//Dont buy till it decreases
+            else
+            {
+                profit = arr[i] - localMin;
+                localMin = arr[i];
+            }
+        }
+        System.out.println(profit);
+    }
+
+    private static void buySellStockOneForMaxProfit() {
+        int arr[] = {2, 6, 7, 19, 5, 6};
+        int minPrice = arr[0];
+        int maxProfit = 0;
+
+        for (int i = 1; i < arr.length ; i++) {
+            if(arr[i] - minPrice > maxProfit)
+                maxProfit = arr[i]-minPrice;
+            if(arr[i]<minPrice)
+                minPrice = arr[i];
+        }
+        System.out.println(maxProfit);
     }
 
     private static void kthLargestEle() {
@@ -96,8 +214,7 @@ public class AllSolution {
         /* Compute maximum sum values in bottom up manner */
             for (i = 1; i < n; i++)
                 for (j = 0; j < i; j++)
-                    if (arr[i] > arr[j] &&
-                            msis[i] < msis[j] + arr[i])
+                    if (arr[i] > arr[j] &&  msis[i] < msis[j] + arr[i])
                         msis[i] = msis[j] + arr[i];
 
         /* Pick maximum of all msis values */
@@ -172,8 +289,9 @@ public class AllSolution {
         {
             int max_val = Integer.MIN_VALUE;
             for (int j = 0; j < i; j++)
-                max_val = Math.max(max_val,
-                        price[j] + val[i-j-1]);
+            {
+                max_val = Math.max(max_val, price[j] + val[i - j - 1]);
+            }
             val[i] = max_val;
         }
 
@@ -289,8 +407,8 @@ public class AllSolution {
             T[0][i] = i;
         }
 
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
+        for (int i = 1; i < rows; i++) {
+            for (int j = 1; j < cols; j++) {
                 T[i][j] = T[i-1][j]+T[i][j-1];
             }
         }

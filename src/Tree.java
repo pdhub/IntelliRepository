@@ -83,4 +83,36 @@ public class Tree {
         }
         return true;
     }
+
+    int heightOfTree(Node root){
+        if(root==null)
+            return 0;
+        int left = heightOfTree(root.left);
+        int right = heightOfTree(root.right);
+        if(left>right)
+            return left;
+        else
+            return right;
+    }
+
+    void preOrderTraversal(Node root){
+        if(root == null)
+            return;
+        System.out.println(root.data);
+        preOrderTraversal(root.left);
+        preOrderTraversal(root.right);
+    }
+
+    void levelOrderTraversal(Node root){
+        if(root == null)
+            return;
+        Queue<Node> queue = new LinkedList<>();
+        queue.add(root);
+        while (!queue.isEmpty()){
+            Node temp = queue.poll();
+            System.out.println(temp.data);
+            queue.add(temp.right);
+            queue.add(temp.left);
+        }
+    }
 }
