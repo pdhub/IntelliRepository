@@ -35,6 +35,47 @@ public class AllSolution {
         buySellManyTimesForMaxProfit();
         eggDroppingProblem();
         diceThrowProblem();
+        stackSortInplace();
+        removeRepeatedDigits(11332);
+    }
+
+    private static void removeRepeatedDigits(int n) {
+        int prev = n%10;
+        int res = prev;
+        int pow = 10;
+        while (n !=0){//this will break cases where we have zero
+            int curr = n%10;
+            if(curr != prev){
+                res += curr * pow;
+                prev = curr;
+                pow = pow * 10;
+            }
+            n = n/10;
+        }
+    }
+
+    private static void stackSortInplace() {
+        Stack stack = new Stack();
+        sortInPlace(stack);
+    }
+
+    private static void sortInPlace(Stack stack) {
+        if(!stack.isEmpty()){
+            int x = (int) stack.pop();
+            sortInPlace(stack);
+            sortedInsert(stack,x);
+        }
+    }
+
+    private static void sortedInsert(Stack stack, int x) {
+
+        if(stack.isEmpty() || x > (int)stack.peek()){
+            stack.push(x);
+            return;
+        }
+        int temp = (int)stack.pop();
+        sortedInsert(stack, x);
+        stack.push(temp);
     }
 
     private static void diceThrowProblem() {

@@ -115,4 +115,52 @@ public class Tree {
             queue.add(temp.left);
         }
     }
+
+    void topview(Node root){
+        if(root == null)
+            return;
+        printLeftView(root);
+        System.out.println(root.data);
+        printRightView(root);
+    }
+
+    private void printLeftView(Node root) {
+        if(root==null)
+            return;
+        System.out.println(root.data);
+        printLeftView(root.left);
+    }
+
+    private void printRightView(Node root) {
+        if(root==null)
+            return;
+        System.out.println(root.data);
+        printRightView(root.right);
+    }
+
+    Node bstInsertion(Node root, int val){
+        if(root == null) {
+            Node temp = new Node(val);
+            //temp.data = val;
+            temp.left = null;
+            temp.right = null;
+            return temp;
+        }
+        if(val < root.data)
+            root.left = bstInsertion(root.left,val);
+        else if(val > root.data)
+            root.right = bstInsertion(root.right, val);
+        return root;
+    }
+
+    Node leastCommonAnncestor(Node root, int v1, int v2){
+
+        if(root == null)
+            return root;
+        if(v1 < root.data && v2 < root.data)
+            return leastCommonAnncestor(root.left, v1, v2);
+        if(v1 > root.data && v2 > root.data)
+            return leastCommonAnncestor(root.right, v1, v2);
+        return root;
+    }
 }
