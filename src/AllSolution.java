@@ -37,6 +37,43 @@ public class AllSolution {
         diceThrowProblem();
         stackSortInplace();
         removeRepeatedDigits(11332);
+        gasStationCircle();
+        groupElementsInSizeM();
+    }
+
+    /*Create an algorithm that makes sure no group of integers of size bigger than M have the same integers*/
+    private static void groupElementsInSizeM() {
+        int input[] = {2,1,5,1,3,5,3,3,4};
+
+    }
+
+    private static void gasStationCircle() {
+        int[] gasAvailable = {4, 4, 6};
+        int[] gasRequired = {5, 6, 1};
+        System.out.println(startTour(gasAvailable, gasRequired));
+    }
+
+    private static int startTour(int[] gasAvailable, int[] gasRequired) {
+        int start = -1;
+        int end = 0;
+        int currentGas = 0;
+        boolean visitedOnce = false;
+        while (start!=end){
+            currentGas = gasAvailable[end]-gasRequired[end];
+            if(start==-1)
+                start = end;
+            if(end == gasAvailable.length-1 && visitedOnce == false)
+                visitedOnce = true;
+            else if(end == gasAvailable.length-1 && visitedOnce == true)
+                return -1;
+            if(currentGas < 0)
+            {
+                start = -1;
+                currentGas = 0;
+            }
+            end = (end+1)%gasAvailable.length;
+        }
+        return end;
     }
 
     private static void removeRepeatedDigits(int n) {
