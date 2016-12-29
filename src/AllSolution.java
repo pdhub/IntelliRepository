@@ -30,7 +30,7 @@ public class AllSolution {
         rodcutting();
         longestCommonsSubsequence();
         maxIncreasingSubsequence();
-        kthLargestEle();
+        kthLargestElementInArray();
         buySellStockOneForMaxProfit();
         buySellManyTimesForMaxProfit();
         eggDroppingProblem();
@@ -38,13 +38,496 @@ public class AllSolution {
         stackSortInplace();
         removeRepeatedDigits(11332);
         gasStationCircle();
-        groupElementsInSizeM();
+        //groupElementsInSizeM();
+        increasingSubsequenceOfLenghth3WithMaxProduct();
+        maxcontiguouscircularsum();
+        kthLargestElementInArray();
+        kthElementInTwoSortedArray();
+        printNextGreaterElementOnRight();
+        //largestSubArrayWithEqualNumberOfZerosAndOnes();
+        //MaximumIminusJSuchThatIgreaterThanj();
+        //MaximumOfAllSubarraySOfSizeK();
+        maxProductSubArray();
+        MaxRepeatingNumber();
+        MinimumDistanceBetweenTwoNumbers();
+        MinimumSortedWhichSortsEntireArray();
+    }
+
+    private static void MinimumSortedWhichSortsEntireArray() {
+    }
+
+    /**
+     * http://www.geeksforgeeks.org/find-the-minimum-distance-between-two-numbers/
+     */
+    private static void MinimumDistanceBetweenTwoNumbers() {
+        int i = 0;
+        int min_dist = Integer.MAX_VALUE;
+        int prev=0;
+
+        // Find the first occurence of any of the two numbers (x or y)
+        // and store the index of this occurence in prev
+        for (i = 0; i < n; i++)
+        {
+            if (arr[i] == x || arr[i] == y)
+            {
+                prev = i;
+                break;
+            }
+        }
+
+        // Traverse after the first occurence
+        for (; i < n; i++)
+        {
+            if (arr[i] == x || arr[i] == y)
+            {
+                // If the current element matches with any of the two then
+                // check if current element and prev element are different
+                // Also check if this value is smaller than minimum distance
+                // so far
+                if (arr[prev] != arr[i] && (i - prev) < min_dist)
+                {
+                    min_dist = i - prev;
+                    prev = i;
+                }
+                else
+                    prev = i;
+            }
+        }
+        System.out.println(min_dist);
+
+
+    }
+
+    /*
+    * **
+    * http://www.geeksforgeeks.org/find-the-maximum-repeating-number-in-ok-time/
+    * Given an array of size n, the array contains numbers in range from 0 to k-1
+    * where k is a positive integer and k <= n.
+    * Find the maximum repeating number in this array
+    */
+    private static void MaxRepeatingNumber() {
+        int arr[] = {2,2,1,3,1,2,0,3,0,0,0,4,5,4,4,4,4};
+        int k = 6;
+        int len = k;
+        for(int i=0;  i < arr.length; i++){
+            arr[arr[i]%len] += len;
+        }
+
+        for (int i = 0; i < arr.length; i++) {
+            System.out.print(arr[i] + " ");
+        }
+        int maxRepeating = 0;
+        int maxRepeatingIndex =0;
+        for(int i=0; i < len; i++){
+            if(maxRepeating < arr[i]){
+                maxRepeating = arr[i];
+                maxRepeatingIndex = i;
+            }
+        }
+        for(int i=0; i < len; i++){
+            arr[i] = arr[i] % len;
+        }
+        System.out.println("MaxRepeatingNumber :" + maxRepeatingIndex);
+    }
+
+    private static void maxProductSubArray() {
+        /*http://www.geeksforgeeks.org/maximum-product-subarray/*
+        Find the contiguous sub array within an array (containing at least one number) which has the largest product./
+         */
+        int arr[] = {1, -2, -3, 0, 7, -8, -2};
+        int n = arr.length;
+        // max positive product ending at the current position
+        int max_ending_here = 1;
+
+        // min negative product ending at the current position
+        int min_ending_here = 1;
+
+        // Initialize overall max product
+        int max_so_far = 1;
+
+        /* Traverse through the array. Following
+           values are maintained after the ith iteration:
+           max_ending_here is always 1 or some positive product
+                           ending with arr[i]
+           min_ending_here is always 1 or some negative product
+                           ending with arr[i] */
+        for (int i = 0; i < n; i++)
+        {
+            /* If this element is positive, update max_ending_here.
+                Update min_ending_here only if min_ending_here is
+                negative */
+            if (arr[i] > 0)
+            {
+                max_ending_here = max_ending_here*arr[i];
+                min_ending_here = Math.min (min_ending_here * arr[i], 1);
+            }
+
+            /* If this element is 0, then the maximum product cannot
+               end here, make both max_ending_here and min_ending
+              _here 0
+               Assumption: Output is alway greater than or equal to 1. */
+            else if (arr[i] == 0)
+            {
+                max_ending_here = 1;
+                min_ending_here = 1;
+            }
+
+            /* If element is negative. This is tricky
+               max_ending_here can either be 1 or positive.
+               min_ending_here can either be 1 or negative.
+               next min_ending_here will always be prev.
+               max_ending_here * arr[i]
+               next max_ending_here will be 1 if prev
+               min_ending_here is 1, otherwise
+               next max_ending_here will be
+                           prev min_ending_here * arr[i] */
+            else
+            {
+                int temp = max_ending_here;
+                max_ending_here = Math.max (min_ending_here * arr[i], 1);
+                min_ending_here = temp * arr[i];
+            }
+
+            // update max_so_far, if needed
+            if (max_so_far <  max_ending_here)
+                max_so_far  =  max_ending_here;
+        }
+
+        System.out.println();
+        System.out.println(" maxProductSubArray : "+max_so_far);
+    }
+
+    /**http://www.geeksforgeeks.org/maximum-of-all-subarrays-of-size-k/*/
+    private static void MaximumOfAllSubarraySOfSizeK() {
+        int input[] = {1, 2, 3, 1, 4, 5, 2, 3, 6};
+        int k = 3;
+
+        // Create a Double Ended Queue, Qi that will store indexes of array elements
+        // The queue will store indexes of useful elements in every window and it will
+        // maintain decreasing order of values from front to rear in Qi, i.e.,
+        // arr[Qi.front[]] to arr[Qi.rear()] are sorted in decreasing order
+        Deque<Integer> queue = new LinkedList<Integer>();
+        int max[] = new int[input.length - k + 1];
+        int maxVal = Integer.MIN_VALUE;
+        //first find max of first k values and make it 0th element of max array
+        for (int i = 0; i < k; i++) {
+            if(maxVal < input[i])
+                maxVal = input[i];
+            if (queue.isEmpty())
+                queue.offerLast(i);
+            else {//Keep on removing till input[i] >= input of the index in the last element in the queue
+                while (!queue.isEmpty() && input[queue.peekLast()]<=input[i])
+                    queue.pollLast();
+                queue.offerLast(i);
+            }
+        }
+        max[0] = maxVal;
+        int index = -1;
+        //continue from k till end of the input array
+        for (int i = k; i < input.length; i++) {
+            //if index of peek is k distance from i then its no value to us.
+            //throw it away
+            if (i - k + 1 > queue.peekFirst()) {
+                queue.pollFirst();
+            }
+            while (!queue.isEmpty() && input[queue.peekLast()] <= input[i]) {
+                queue.pollLast();
+            }
+            queue.offerLast(i);
+            //Only reason first element survived was because it was biggest element.
+            //make it the max value for this k
+            max[index] = input[queue.peekFirst()];
+            index++;
+        }
+        System.out.print("MaximumOfAllSubarraySOfSizeK :");
+        for (int i : max)
+            System.out.print(i + " ");
+        System.out.println();
+    }
+
+    private static void MaximumIminusJSuchThatIgreaterThanj() {
+        int input[] = {11,14,13,1,4,13,1,10};
+        int lhs[] = new int[input.length];
+        int rhs[] = new int[input.length];
+        lhs[0] = 0;
+        for (int i = 1; i < lhs.length; i++)
+        {
+            if (input[lhs[i - 1]] < input[i])
+                lhs[i] = lhs[i-1];
+            else
+                lhs[i] = i;
+        }
+
+        rhs[input.length-1] = input.length-1;
+
+        for(int i=input.length-2; i >= 0; i--){
+            if(input[rhs[i+1]] > input[i]){
+                rhs[i] = rhs[i+1];
+            }else{
+                rhs[i] = i;
+            }
+        }
+
+        int i=0;
+        int j=0;
+        int max = 0;
+        for(;j < input.length;){
+            if(input[lhs[i]] < input[rhs[j]]){
+                max = Math.max(max, j-i);
+                j++;
+            }else{
+                i++;
+            }
+        }
+        System.out.println("MaximumIminusJSuchThatIgreaterThanj : "+max);
+
+    }
+
+
+    /*http://www.geeksforgeeks.org/largest-subarray-with-equal-number-of-0s-and-1s/*/
+    private static void largestSubArrayWithEqualNumberOfZerosAndOnes() {
+        int arr[] = {1, 0, 0, 1, 0, 1, 1};
+
+        int sum[] = new int[arr.length];
+        sum[0] = arr[0] == 0 ? -1 : 1;
+        for (int i = 1; i < sum.length  ; i++) {
+            sum[i] = sum[i-1]+arr[i-1]==0? -1 : 1;
+        }
+
+        Map<Integer, Integer> pos = new HashMap<Integer, Integer>();
+        int maxLen = 0, i =0;
+        for (int s : sum){
+            if (s==0)
+                maxLen = Math.max(maxLen, i+1);
+            if (pos.containsKey(s))
+                maxLen = Math.max(maxLen, i-pos.get(s));
+            else
+                pos.put(s,i);
+            i++;
+        }
+        System.out.println("largestSubArrayWithEqualNumberOfZerosAndOnes : " + maxLen);
+    }
+
+    private static void printNextGreaterElementOnRight() {
+        int input[] = {4,2,-8,6,0,-3,-1,1,9};
+        int result[] = getAllLargers(input);
+        for(int i=0; i < result.length; i++){
+            if(result[i] != -1){
+                System.out.print(input[result[i]] + " ");
+            }else{
+                System.out.print("NIL ");
+            }
+        }
+    }
+
+    private static int[] getAllLargers(int[] input) {
+        Deque<Integer> stack = new LinkedList<Integer>();
+        int result[] = new int[input.length];
+        Arrays.fill(result, -1);
+
+        stack.offerFirst(0);//would fail if there are negative elements. i think we should use INTEGER.MIN_VALUE
+        for (int i = 0; i < input.length; i++) {
+            while (stack.size() > 0){
+                int t = stack.peekFirst();
+                if(input[t] < input[i]){
+                    result[t] = i;
+                    stack.pollFirst();
+                }else
+                    break;
+            }
+            stack.offerFirst(i);
+        }
+        return result;
+    }
+
+    /*http://algorithmsandme.in/2014/12/find-kth-smallest-element-in-two-sorted-arrays/
+    * http://stackoverflow.com/questions/4686823/given-2-sorted-arrays-of-integers-find-the-nth-largest-number-in-sublinear-time*/
+    private static void kthElementInTwoSortedArray() {
+        int a[] = {1, 4, 7, 11, 17, 21};
+        int b[] = {-4, -1, 3, 4, 6, 28, 35, 41, 56, 70};
+        findKthSmallestElement(a, b, a.length, b.length, 4);
+    }
+
+    public static int findKthSmallestElement(int a[], int b[], int sizeA, int sizeB, int k)
+    {
+        /* to maintain uniformaty, we will assume that size_a is smaller than size_b
+            else we will swap array in call :) */
+        if(sizeA > sizeB)
+            return findKthSmallestElement(b, a, sizeB, sizeA, k);
+        /* Now case when size of smaller array is 0 i.e there is no elemt in one array*/
+        if(sizeA == 0 && sizeB >0)
+            return b[k-1]; // due to zero based index
+
+        /* case where K ==1 that means we have hit limit */
+        if(k ==1)
+            return Math.min(a[0], b[0]);
+
+        /* Now the divide and conquer part */
+        int i =  Math.min(sizeA, k/2) ; // K should be less than the size of array
+        int j =  Math.min(sizeB, k/2) ; // K should be less than the size of array
+
+        if(a[i-1] > b[j-1]){
+            // Now we need to find only K-j th element
+            b = Arrays.copyOfRange(b, j, b.length);
+            return findKthSmallestElement(a, b, i, (sizeB-j), k-j);
+        }
+        else if(a[i-1] <= b[j-1]){
+            a = Arrays.copyOfRange(a, i, a.length);
+            return findKthSmallestElement(a, b, (sizeA-i), j, k-i);
+        }
+        return -1;
+    }
+
+    private static int maxcontiguouscircularsum() {
+        int a[] = {9,6,-6,5,7};
+        int n = a.length;
+
+        // Case 1: get the maximum sum using standard kadane'
+        // s algorithm
+        int max_kadane = kadane(a);
+
+        // Case 2: Now find the maximum sum that includes
+        // corner elements.
+        int max_wrap  =  0;
+        for (int i = 0; i < n; i++)
+        {
+            max_wrap += a[i]; // Calculate array-sum
+            a[i] = -a[i];  // invert the array (change sign)
+        }
+
+        // max sum with corner elements will be:
+        // array-sum - (-max subarray sum of inverted array)
+        max_wrap = max_wrap + kadane(a);
+
+        // The maximum circular sum will be maximum of two sums
+        return (max_wrap > max_kadane)? max_wrap: max_kadane;
+
+    }
+
+    static int kadane (int a[])
+    {
+        int n = a.length;
+        int max_so_far = 0, max_ending_here = 0;
+        for (int i = 0; i < n; i++)
+        {
+            max_ending_here = max_ending_here + a[i];
+            if (max_ending_here < 0)
+                max_ending_here = 0;
+            if (max_so_far < max_ending_here)
+                max_so_far = max_ending_here;
+        }
+        return max_so_far;
+    }
+
+
+    private static void increasingSubsequenceOfLenghth3WithMaxProduct() {
+        /*http://www.geeksforgeeks.org/increasing-subsequence-of-length-three-with-maximum-product/*/
+        int actualArr[] = {6,7,9,4,8,9};
+        int RGN[] = new int[actualArr.length];
+        int LGN[] = new int[actualArr.length];
+        
+        RGN[actualArr.length-1] = actualArr[actualArr.length-1];
+        int max = actualArr[actualArr.length-1];
+
+        for (int i = actualArr.length-2; i >=0 ; i--) {
+            if(max < actualArr[i])
+                max = actualArr[i];
+            if(max > actualArr[i])
+                RGN[i] = max;
+            else
+                RGN[i] = 0;
+        }
+
+        LGN[0] = 0;
+        for (int i = 1; i < actualArr.length; i++) {
+            getLGN(actualArr, i , LGN);
+        }
+
+        int maxProduct = 0;
+        for(int i=1; i < actualArr.length-1; i++){
+            int product = actualArr[i]*LGN[i]*RGN[i];
+            if(maxProduct < product){
+                maxProduct = product;
+            }
+        }
+
+        System.out.println(maxProduct);
+    }
+
+    private static void getLGN(int arr[],int pos,int LGN[]){
+        int max = 0;
+        int i =0;
+        while(i < pos){
+            if(arr[i] < arr[pos]){
+                if(arr[i] > max){
+                    max = arr[i];
+                }
+            }
+            i++;
+        }
+        LGN[pos] = max;
     }
 
     /*Create an algorithm that makes sure no group of integers of size bigger than M have the same integers*/
-    private static void groupElementsInSizeM() {
+    private void groupElementsInSizeM() {
         int input[] = {2,1,5,1,3,5,3,3,4};
+        int M = 4;
 
+        Map<Integer, Integer> count = new HashMap<>();
+        for (int i = 0; i < input.length; i++) {
+            int c = 1;
+            if(count.containsKey(i)){
+                c = count.get(i);
+                c++;
+            }
+            count.put(i,c);
+        }
+
+        PriorityQueue<Pair> maxHeap = new PriorityQueue<Pair>(count.size(), new Comparators());
+        for (Integer s : count.keySet()){
+            int c = count.get(s);
+            if(c > Math.ceil(input.length/M)) {
+                System.out.println("cannot group");
+                return;
+            }
+            maxHeap.offer(new Pair(s,c));
+        }
+        int current = 0;
+        int start = current;
+        while (maxHeap.size() > 0){
+            Pair p = maxHeap.poll();
+            int i = 0;
+            while (i<p.count){
+                input[start] = p.num;
+                start = start+M;
+                if(start>=input.length){
+                    current++;
+                    start = current;
+                }
+                i++;
+            }
+
+        }
+        return;
+    }
+    class Pair{
+        int num;
+        int count;
+
+        public Pair(int num, int count) {
+            this.num = num;
+            this.count = count;
+        }
+    }
+    public class Comparators implements Comparator<Pair>{
+
+        @Override
+        public int compare(Pair o1, Pair o2) {
+            if(o1.count<=o2.count)
+                return 1;
+            else
+                return -1;
+        }
     }
 
     private static void gasStationCircle() {
@@ -229,7 +712,7 @@ public class AllSolution {
         System.out.println(maxProfit);
     }
 
-    private static void kthLargestEle() {
+    private static void kthLargestElementInArray() {
 
         /*This is an optimization over method 1 if QuickSort is used as a sorting algorithm in first step. In QuickSort, we pick a pivot element, then move the pivot element to its
         correct position and partition the array around it. The idea is, not to do complete quicksort, but stop at the point where pivot itself is k’th smallest element.
@@ -237,6 +720,7 @@ public class AllSolution {
         position of pivot. The worst case time complexity of this method is O(n2), but it works in O(n) on average.*/
 
         //kthSmallest(int arr[], int l, int r, int k);
+
     }
 
     int kthSmallest(int arr[], int l, int r, int k)
